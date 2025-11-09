@@ -68,23 +68,29 @@ J'ai tout d'abord réalisé la requêtte SQL dans le **Centre de Contrôl HFSQL*
 
 ## Etape 3 : Générer le fichier XML
 - J'ai tout d'abord créé le script python que voici :
---
+---
 import pandas as pd
 from xml.etree.ElementTree import Element, SubElement, tostring
 from xml.dom.minidom import parseString
+
 df = pd.read_excel("Export.xlsx")
+
 root = Element("data")
+
 for _, row in df.iterrows():
     record = SubElement(root, "record", model="com.axelor.apps.base.db.Product")
     for col in df.columns:
         value = str(row[col]).strip()
         if value != "nan" and value != "":
             SubElement(record, "field", name=col).text = value
+
 xml_str = parseString(tostring(root, encoding="utf-8")).toprettyxml(indent="  ")
+
 with open("produits_axelor.xml", "w", encoding="utf-8") as f:
     f.write(xml_str)
 
 print("✅ Fichier produits_axelor.xml généré avec succès !")
+
 - Je l'ai ensuite exécuté dans l'invite de commandes puis le fichier a été géréné
 
 
