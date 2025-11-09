@@ -71,27 +71,15 @@ J'ai tout d'abord réalisé la requêtte SQL dans le **Centre de Contrôl HFSQL*
 "  import pandas as pd
 from xml.etree.ElementTree import Element, SubElement, tostring
 from xml.dom.minidom import parseString
-
-# === 1. Charge ton fichier Excel ===
 df = pd.read_excel("Export.xlsx")
-
-# === 2. Crée la racine XML ===
 root = Element("data")
-
-# === 3. Boucle sur chaque ligne du tableau Excel ===
 for _, row in df.iterrows():
     record = SubElement(root, "record", model="com.axelor.apps.base.db.Product")
-
-    # Pour chaque colonne, on crée un champ XML
     for col in df.columns:
         value = str(row[col]).strip()
         if value != "nan" and value != "":
             SubElement(record, "field", name=col).text = value
-
-# === 4. Génère le XML formaté ===
 xml_str = parseString(tostring(root, encoding="utf-8")).toprettyxml(indent="  ")
-
-# === 5. Sauvegarde dans un fichier XML ===
 with open("produits_axelor.xml", "w", encoding="utf-8") as f:
     f.write(xml_str)
 
